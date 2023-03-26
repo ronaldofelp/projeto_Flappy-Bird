@@ -10,8 +10,8 @@ TELA_ALTURA = 800
 
 IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join('Flappybird\imgs','base.png')))
 IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('Flappybird\imgs','pipe.png')))
-IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(os.path.join('Flappybird\imgs','bg.png')))
-IMAGENS_PASSAROS = [
+IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(os.path.join('Flappybird\imgs','bkn.png')))
+IMAGENS_PASSARO = [
     pygame.transform.scale2x(pygame.image.load(os.path.join('Flappybird\imgs','bird1.png'))),
     pygame.transform.scale2x(pygame.image.load(os.path.join('Flappybird\imgs','bird2.png'))),
     pygame.transform.scale2x(pygame.image.load(os.path.join('Flappybird\imgs','bird3.png'))),
@@ -25,9 +25,9 @@ FONTE_PONTOS = pygame.font.SysFont('arial', 50)
 
 # Objetos
 
-class Passaro:
+class Bird:
 
-    IMGS = IMAGENS_PASSAROS
+    IMGS = IMAGENS_PASSARO
     # animações da rotação
     ROTACAO_MAXIMA = 25 
     VELOCIDADE_ROTACAO = 20
@@ -54,7 +54,7 @@ class Passaro:
     def mover(self):
         # calcular o deslocamento 
         self.tempo += 1
-        deslocamento = 1.5 *(self.tempo**2) + self.velocidade * self.tempo
+        deslocamento = 2.1 *(self.tempo**2) + self.velocidade * self.tempo
         # restringir o deslocamento 
         if deslocamento > 16:
             deslocamento = 16
@@ -94,6 +94,7 @@ class Passaro:
 
         elif self.contagem_imagem >= self.TEMPO_ANIMACAO*4 + 1:
             self.imagem = self.IMGS[0]
+            self.contagem_imagem = 0
 
 
         # se o passaro tiver caindo | não bater asas
@@ -105,9 +106,9 @@ class Passaro:
         # desenhar imagem
 
         imagem_rotacionada = pygame.transform.rotate(self.imagem, self.angulo)
-        pos_centro_imagem = self.imagem.get_rect(topleft=(self.x, self.angulo)).center
+        pos_centro_imagem = self.imagem.get_rect(topleft=(self.x, self.y)).center
         retangulo = imagem_rotacionada.get_rect(center=pos_centro_imagem)
-        tela.blit(imagem_rotacionada, retangulo.topleft)
+        tela.blit( imagem_rotacionada, retangulo.topleft)
 
 
     def get_mask(self):
@@ -201,12 +202,12 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
     pygame.display.update()
 
 
-passaros = [Passaro(230, 350)]
+
 
 def main():
-    passaros
+    
     chao = Chao(730)
-    #passaros = [Passaro(230, 350)]
+    passaros = [Bird(230, 350)]
     canos = [Cano(700)]
     tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
     pontos = 0
@@ -237,12 +238,12 @@ def main():
 
         adicionar_cano = False
 
-        remover_canos = []
+        remover_canos = [] 
 
         for cano in canos:
             for i, passaro in enumerate(passaros):
                 if cano.colidir(passaro):
-                    passaro.pop(i)
+                    passaros.pop(i)
 
                 if not cano.passou and passaro.x > cano.x:
                     cano.passou = True
