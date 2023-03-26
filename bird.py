@@ -1,6 +1,7 @@
 import pygame
 import os
 import random
+import time
 
 
 # CONSTANTES
@@ -155,6 +156,7 @@ class Cano:
 
         if base_ponto or topo_ponto:
             return True
+        
         else:
             return False
         
@@ -186,6 +188,8 @@ class Chao:
         tela.blit(self.IMAGEM, (self.x2, self.y))
 
         
+   
+
 
 
 def desenhar_tela(tela, passaros, canos, chao, pontos):
@@ -205,6 +209,7 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
 
 
 def main():
+    
     
     chao = Chao(730)
     passaros = [Bird(230, 350)]
@@ -244,14 +249,23 @@ def main():
             for i, passaro in enumerate(passaros):
                 if cano.colidir(passaro):
                     passaros.pop(i)
+                    time.sleep(1)
+                    rodando = False    
+
+                
+                    
 
                 if not cano.passou and passaro.x > cano.x:
                     cano.passou = True
                     adicionar_cano = True
 
+        
             cano.move()
             if cano.x + cano.CANO_TOPO.get_width() < 0:
                 remover_canos.append(cano)
+
+        
+    
 
 
         if adicionar_cano:
